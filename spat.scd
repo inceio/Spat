@@ -21,14 +21,9 @@ if(~debugMode == 1, { //getting all player sounds to the main laptop speakers
 //	{Out.ar(0, In.ar((5 * 2), 2))}.play;
 });
 */
-~disCal = { arg a1,b1,c1;
-	(a1.squared + b1.squared + c1.squared).sqrt};
-
-
-
 
 OSCdef(\player0, { |msg, time| //first player;
-//	msg.postln;
+	msg.postln;
 
 	~playerz[msg[1],0] = msg[2];
 	~playerz[msg[1],1] = msg[3];
@@ -48,6 +43,7 @@ OSCdef(\player0, { |msg, time| //first player;
 	~playerz[msg[1],15] = msg[17]; //attack
 	~playerz[msg[1],16] = msg[18]; //release
 	//read from input bus depending on the spread params
+
 	~playerNumber.do({arg playerz;
 		if(~playerz[playerz,0] != nil,
 			{
@@ -55,15 +51,10 @@ OSCdef(\player0, { |msg, time| //first player;
 				//Player vs player check
 				if (playerz != msg[1],
 					{
-						if(msg[5] > ~disCal.value(~playerz[playerz,0] - ~playerz[msg[1],0],~playerz[playerz,1] - ~playerz[msg[1],1],~playerz[playerz,2] - ~playerz[msg[1],2]),
+						if(msg[5] > ~disCal.value(~playerz[playerz,0] -
+							~playerz[msg[1],0],~playerz[playerz,1] -
+							~playerz[msg[1],1],~playerz[playerz,2] - ~playerz[msg[1],2]),
 							{
-								if(msg[1] >= 10, {
-									if( ~boolMePVP[msg[1], playerz] == nil,
-									{
-										playerChecker.value(21, 0, playerz, msg[1]);
-									});
-
-								},{
 									if(~playerz[msg[1],11] == 1, {//eger yanlis loop ise sesi degistir
 									zoneMainPVP.value(
 										msg[1],
@@ -106,26 +97,14 @@ OSCdef(\player0, { |msg, time| //first player;
 								});
 								if( ~boolMePVP[msg[1], playerz] == nil,
 									{
-										if(msg[1]!=15,//invisible checker
-											{
-												playerChecker.value(0, 0, playerz, msg[1])
-											},
-											{
-												playerChecker.value(1, 0, playerz, msg[1]);
+												playerChecker.value(0, 0, playerz, msg[1]);
 
-											}
-										);
 									},
 									{
-										if(msg[1]!=15,//invisible checker
-											{
-												playerChecker.value(2, 0, playerz, msg[1])
-											},
-											{
-												playerChecker.value(3, 0, playerz, msg[1]); }
-										);
-									}
-								);
+
+												playerChecker.value(2, 0, playerz, msg[1]);
+
+								});
 							},
 							{
 								~player_Looper[playerz,msg[1]] = 0;
@@ -137,36 +116,29 @@ OSCdef(\player0, { |msg, time| //first player;
 										~boolMePVP[msg[1], playerz].free;
 										~boolMePVP[msg[1], playerz] = nil;
 								});
-							}
-						);
-
-								});
-
+							});
 					},
 					{
 						if(~boolMePVP[msg[1], msg[1]] == nil,
 						{
 							//player sound
-							//"playerCheck8".postln;
-							//playerChecker.value(8, 0, playerz, msg[1])
-
-
+							playerChecker.value(8, 0, playerz, msg[1])
 						},
 						{
-
 							//"playerCheck10".postln;
-							//playerChecker.value(10, 0, playerz, msg[1])
+							playerChecker.value(10, 0, playerz, msg[1])
 
 						});
 
-					}
-
-				);
+					});
+				///Zone loop activated by player movement
 				~zoneNumber.do({arg zoneIndex;
 					//Player vs zone check
 					if(~zonez[zoneIndex,0] != nil,
 						{
-							if(~zonez[zoneIndex,3] > ~disCal.value(~zonez[zoneIndex,0] - ~playerz[playerz,0], ~zonez[zoneIndex,1] - ~playerz[playerz,1],~zonez[zoneIndex,2] - ~playerz[playerz,2]),
+							if(~zonez[zoneIndex,3] > ~disCal.value(~zonez[zoneIndex,0] -
+								~playerz[playerz,0], ~zonez[zoneIndex,1] -
+								~playerz[playerz,1],~zonez[zoneIndex,2] - ~playerz[playerz,2]),
 								{
 									if(~zonez[zoneIndex,11] == 1, {
 										zoneMainPVE.value(zoneIndex,//zone creator & modulator
@@ -197,8 +169,8 @@ OSCdef(\player0, { |msg, time| //first player;
 												~zonez[zoneIndex,11],//loop
 												~zonez[zoneIndex,12],//spread
 												~zonez[zoneIndex,13],//exp curve
-												~zonez[zoneIndex,14],//
-												~zonez[zoneIndex,15]//
+												~zonez[zoneIndex,14],
+												~zonez[zoneIndex,15]
 											);
 										});
 
@@ -206,32 +178,13 @@ OSCdef(\player0, { |msg, time| //first player;
 									);
 									if (~boolMe[zoneIndex, playerz] == nil,
 										{
-											if(msg[1] >= 10 ,{
-												playerChecker.value(20, zoneIndex, playerz, msg[1]);
-											},{
-
-												playerChecker.value(4, zoneIndex, playerz, msg[1]);
-
-											});
-											/*if(msg[1]!=115,//invisible checker
-												{
-													playerChecker.value(4, zoneIndex, playerz, msg[1]);
-												},
-												{
-													playerChecker.value(5, zoneIndex, playerz, msg[1])
-												}
-											);*/
-											//ilk girme aninda player binderlari acma
+											playerChecker.value(4, zoneIndex, playerz, msg[1])
 										},
 										{
-											if(msg[1]!=115,//invisible checker
-												{playerChecker.value(6, zoneIndex, playerz, msg[1])},
-												{playerChecker.value(7, zoneIndex, playerz, msg[1])}
-											);
-											//ambisonic mods
-									})
+											playerChecker.value(6, zoneIndex, playerz, msg[1])
 
-								},
+									})
+							    },
 								{
 									~zone_Looper[zoneIndex,playerz] = 0;
 									if(~boolMe[zoneIndex, playerz] != nil,
@@ -240,7 +193,6 @@ OSCdef(\player0, { |msg, time| //first player;
 											~boolMe[zoneIndex, playerz].free;
 											~boolMe[zoneIndex, playerz] = nil;
 									});
-
 							});
 					});
 				});
@@ -251,7 +203,7 @@ OSCdef(\player0, { |msg, time| //first player;
 
 
 OSCdef(\zone0, { |msg, time| //first player
-	//msg.postln;
+	msg.postln;
 	~zonez[msg[1],0] = msg[2];
 	~zonez[msg[1],1] = msg[3];
 	~zonez[msg[1],2] = msg[4];
@@ -271,25 +223,31 @@ OSCdef(\zone0, { |msg, time| //first player
 
 }, \zonePos).permanent_(true);
 
+~disCal = { arg a1,b1,c1;
+	(a1.squared + b1.squared + c1.squared).sqrt};
 
 closenessCheckerPVE = { arg item, playerz;
 	var abc;
-	(~zonez[item,3] - ~disCal.value(~zonez[item,0] - ~playerz[playerz,0],~zonez[item,1] - ~playerz[playerz,1],~zonez[item,2] - ~playerz[playerz,2])).abs
+	(~zonez[item,3] - ~disCal.value(~zonez[item,0] - ~playerz[playerz,0],
+		~zonez[item,1] - ~playerz[playerz,1],~zonez[item,2] - ~playerz[playerz,2])).abs
 };
 
 closenessCheckerPVP = { arg item, playerz;
 	var abc;
-	(~playerz[item,3] - ~disCal.value(~playerz[item,0] - ~playerz[playerz,0],~playerz[item,1] - ~playerz[playerz,1],~playerz[item,2] - ~playerz[playerz,2])).abs
+	(~playerz[item,3] - ~disCal.value(~playerz[item,0] - ~playerz[playerz,0],
+		~playerz[item,1] - ~playerz[playerz,1],~playerz[item,2] - ~playerz[playerz,2])).abs
 };
 
 closenessCheckerPVEeval = { arg item, playerz;
 	var abc;
-	(~zonez[item,3] - ~disCal.value(~zonez[item,0] - ~playerz[playerz,0],~zonez[item,1] - ~playerz[playerz,1],~zonez[item,2] - ~playerz[playerz,2])).abs
+	(~zonez[item,3] - ~disCal.value(~zonez[item,0] - ~playerz[playerz,0],
+		~zonez[item,1] - ~playerz[playerz,1],~zonez[item,2] - ~playerz[playerz,2])).abs
 };
 
 closenessCheckerPVPeval = { arg item, playerz;
 	var abc;
-	(~playerz[item,3] - ~disCal.value(~playerz[item,0] - ~playerz[playerz,0],~playerz[item,1] - ~playerz[playerz,1],~playerz[item,2] - ~playerz[playerz,2])).abs
+	(~playerz[item,3] - ~disCal.value(~playerz[item,0] - ~playerz[playerz,0],
+		~playerz[item,1] - ~playerz[playerz,1],~playerz[item,2] - ~playerz[playerz,2])).abs
 };
 
 
@@ -413,19 +371,22 @@ zoneMainPVP = { arg
 			~pvp[msg1]= Synth(\Manchun, [
 				\busOut, ~pvp_Bus[msg1],
 				\busOut2, ~pvp_Bus2[msg1],
-				\amp, 0] ++ ~defSampler.value(1, msg6, msg7, msg8, msg9, msg10, msg11,msg10,90,msg13,msg14,msg17,msg18)).onFree{~pvp[msg1]= nil}
+				\amp, 0] ++ ~defSampler.value(1, msg6, msg7, msg8, msg9, msg10,
+				msg11,msg10,90,msg13,msg14,msg17,msg18)).onFree{~pvp[msg1]= nil}
 		},
 		{//clone
 			if(~pvp[msg1] != nil,
 				{
-					~defSampler.value(0,msg6, msg7, msg8, msg9, msg10, msg11,~pvp[msg1],90,msg13,msg14,msg17,msg18);
+					~defSampler.value(0,msg6, msg7, msg8, msg9, msg10, msg11,~pvp[msg1],
+						90,msg13,msg14,msg17,msg18);
 				},
 				{
 					~pvp[msg1].free;
 					~pvp[msg1] = Synth(\Manchun, [
 						\busOut, ~pvp_Bus[msg1],
 						\busOut2, ~pvp_Bus2[msg1],
-						\amp, 0] ++ ~defSampler.value(1,msg6, msg7, msg8, msg9, msg10, msg11, msg10, 90,msg13,msg14,msg17,msg18)).onFree{~pvp[msg1]= nil}
+						\amp, 0] ++ ~defSampler.value(1,msg6, msg7, msg8, msg9, msg10,
+						msg11, msg10, 90,msg13,msg14,msg17,msg18)).onFree{~pvp[msg1]= nil}
 				}
 			);
 		}
@@ -451,12 +412,14 @@ zoneMainPVE = { arg
 			~boolMeZone[msg1] = Synth(\Manchun, [
 				\busOut, ~zone_Bus[msg1],
 				\busOut2, ~zone_Bus2[msg1],
-				\amp, 0] ++ ~defSampler.value(1, msg6, msg7, msg8, msg9, msg10, msg11, msg10, 90,msg14, msg15,msg17,msg18)).onFree{~boolMeZone[msg1]= nil}
+				\amp, 0] ++ ~defSampler.value(1, msg6, msg7, msg8, msg9, msg10, msg11, msg10,
+				90,msg14, msg15,msg17,msg18)).onFree{~boolMeZone[msg1]= nil}
 		},
 		{ //modulator
 			if("Manchun" == ~boolMeZone[msg1].defName.asString,
 				{
-					~defSampler.value(0, msg6, msg7, msg8, msg9, msg10, msg11,~boolMeZone[msg1],90,msg14,msg15,msg17,msg18);
+					~defSampler.value(0, msg6, msg7, msg8, msg9, msg10, msg11,
+						~boolMeZone[msg1],90,msg14,msg15,msg17,msg18);
 				},
 				{
 					~boolMeZone[msg1].free;
@@ -464,7 +427,8 @@ zoneMainPVE = { arg
 						[
 							\busOut, ~zone_Bus[msg1],
 							\busOut2, ~zone_Bus2[msg1],
-							\amp, 0] ++ ~defSampler.value(1,msg6, msg7, msg8, msg9, msg10, msg11, msg10, 90,msg14,msg15,msg17,msg18)).onFree{~boolMeZone[msg1]= nil}
+							\amp, 0] ++ ~defSampler.value(1,msg6, msg7, msg8, msg9, msg10, msg11, msg10,
+							90,msg14,msg15,msg17,msg18)).onFree{~boolMeZone[msg1]= nil}
 				}
 			);
 		}
@@ -494,9 +458,10 @@ playerChecker = { arg funcSelector, zoneIndex, playerz, msg;
 			\busMe2, ~pvp_Bus2[msg],
 			\kanal8, ~sekiz_Bus8[playerz],
 			\busOut, playerz * 2,
-			\closeness, closenessCheckerPVP.value(msg, playerz).lincurve(0,~playerz[msg,3], -45,0,(~playerz[msg,13]/5)-10),
+			\closeness, closenessCheckerPVP.value(msg, playerz).lincurve(0,~playerz[msg,3],
+				-45,0,(~playerz[msg,13]/5)-10),
 			\amp, 1,
-			\panMe, panCal.value(msg, playerz) // -1 ile 1 degeri arasi aliyor, -1 hard left, 1 hard right
+			\panMe, panCal.value(msg, playerz)
 		]
 		).onFree{~boolMePVP[msg, playerz] = nil};
 	}
@@ -516,6 +481,13 @@ playerChecker = { arg funcSelector, zoneIndex, playerz, msg;
 
 		});
 	}
+
+	//invisible pvp binder  synth modulator
+	{ funcSelector == 3 }
+	{
+		"invisible func3".postln;
+	}
+
 	//visible pvp binder  synth modulator
 	{ funcSelector == 2 }
 	{
@@ -523,7 +495,8 @@ playerChecker = { arg funcSelector, zoneIndex, playerz, msg;
 		//closenessCheckerPVP.value(msg, playerz).postln;
 		if(~boolMePVP[msg, playerz] != nil, {
 		~boolMePVP[msg, playerz].set(
-			\closeness, closenessCheckerPVP.value(msg, playerz).lincurve(0,~playerz[msg,3], -45,0,(~playerz[msg,13]/5)-10),
+			\closeness, closenessCheckerPVP.value(msg, playerz).lincurve(0,~playerz[msg,3],
+					-45,0,(~playerz[msg,13]/5)-10),
 			\panMe, panCal.value(msg, playerz)
 
 		);},{
@@ -533,63 +506,44 @@ playerChecker = { arg funcSelector, zoneIndex, playerz, msg;
 			\busMe2, ~pvp_Bus2[msg],
 			\kanal8, ~sekiz_Bus8[playerz],
 			\busOut, playerz * 2,
-			\closeness, closenessCheckerPVP.value(msg, playerz).lincurve(0,~playerz[msg,3], -45,0,(~playerz[msg,13]/5)-10),
+			\closeness, closenessCheckerPVP.value(msg, playerz).lincurve(0,~playerz[msg,3],
+					-45,0,(~playerz[msg,13]/5)-10),
 			\amp, 1,
-			\panMe, panCal.value(msg, playerz) // -1 ile 1 degeri arasi aliyor, -1 hard left, 1 hard right
+			\panMe, panCal.value(msg, playerz)
 		]
 		).onFree{~boolMePVP[msg, playerz] = nil};
 		})
 	}
 
-	//invisible pvp binder  synth modulator
-	{ funcSelector == 3 }
-	{
-		"invisible func3".postln;
-	}
-
-	//visible kendi ses duyma creator
+	//visible own sound creator
 	{ funcSelector == 8 }
 	{
-		"visible func8".postln;
-		~boolMePVP[msg, msg] = Synth.after(~pvp[msg], \binder,
-			[\busMe, ~pvp_Bus[msg],\busOut, msg * 2,
-				\amp, 1]).onFree{~boolMePVP[msg, msg] = nil};
+			~boolMePVP[msg, msg] = Synth.after(~pvp[msg], \binder,[
+			\busMe, ~pvp_Bus[msg],
+			\busMe2, ~pvp_Bus2[msg],
+			\kanal8, ~sekiz_Bus8[msg],
+			\busOut, msg* 2,
+			\closeness, 1,
+			\amp, 1,
+			\panMe, 0
+		]
+		).onFree{~boolMePVP[msg, msg] = nil};
+
 	}
 
-	//visible kendi ses duyma modulator
+	//visible visible own sound modulator
 	{ funcSelector == 10 }
 	{
-		"visible func10".postln;
-
-	}
-
-		//visible kendi ses duyma modulator
-	{ funcSelector == 20 }
-	{
-		~boolMe[zoneIndex, msg] = Synth.after(~boolMeZone[zoneIndex], \binderPlayerSpeaker,
-			[
-				\busMe, ~zone_Bus[zoneIndex],
-				\busOut, msg,
-				\amp, 1,
-				\closeness, closenessCheckerPVE.value(zoneIndex, msg).lincurve(0,~zonez[zoneIndex,3], -45, 0,(~zonez[zoneIndex,13]/5)-10),
-				\panMe, panCal.value(zoneIndex, playerz)
-			]
-		).onFree{~boolMe[zoneIndex, playerz] = nil};
-	}
-	{ funcSelector == 21}
-	{//MAYBE MESSED UP INDEXING
-
-		~boolMePVP[msg, playerz] = Synth.after(~pvp[playerz], \binderPlayerSpeaker,[
-			\busMe, ~pvp_Bus[playerz],
-			\busOut, msg,
-			\closeness, closenessCheckerPVP.value(msg, playerz).lincurve(0,~playerz[msg,3], -45,0,(~playerz[msg,13]/5)-10),
+		~boolMePVP[msg, msg].set([
+			\busMe, ~pvp_Bus[msg],
+			\busMe2, ~pvp_Bus2[msg],
+			\kanal8, ~sekiz_Bus8[msg],
+			\busOut, msg* 2,
+			\closeness, 1,
 			\amp, 1,
-			\panMe, panCal.value(msg, playerz) // -1 ile 1 degeri arasi aliyor, -1 hard left, 1 hard right
-		]
-		).onFree{~boolMePVP[msg, playerz] = nil};
+			\panMe, 0])
+
 	}
-
-
 
 	//visible pve synth creator.
 	{ funcSelector == 4 }
@@ -604,7 +558,8 @@ playerChecker = { arg funcSelector, zoneIndex, playerz, msg;
 				\kanal8, ~sekiz_Bus8[playerz],
 				\busOut, playerz * 2,
 				\amp, 1,
-				\closeness, closenessCheckerPVE.value(zoneIndex, playerz).lincurve(0,~zonez[zoneIndex,3], -45, 0,(~zonez[zoneIndex,13]/5)-10), //yakinlastikca artan ses
+				\closeness, closenessCheckerPVE.value(zoneIndex, playerz).lincurve(0,~zonez[zoneIndex,3],
+					-45, 0,(~zonez[zoneIndex,13]/5)-10),
 				\panMe, panCalPVE.value(zoneIndex, playerz)
 			]
 		).onFree{~boolMe[zoneIndex, playerz] = nil};
@@ -621,7 +576,8 @@ playerChecker = { arg funcSelector, zoneIndex, playerz, msg;
 				\kanal8, ~sekiz_Bus8[playerz],
 				\busOut, playerz * 2,
 				\amp, 1,
-				\closeness, closenessCheckerPVE.value(zoneIndex, playerz).lincurve(0,~zonez[zoneIndex,3], -45, 0,(~zonez[zoneIndex,13]/5)-10), //yakinlastikca artan ses
+				\closeness, closenessCheckerPVE.value(zoneIndex, playerz).lincurve(0,~zonez[zoneIndex,3],
+					-45, 0,(~zonez[zoneIndex,13]/5)-10),
 				\panMe, panCal.value(zoneIndex, playerz)
 			]
 		).onFree{~boolMe[zoneIndex, playerz] = nil};
@@ -630,31 +586,109 @@ playerChecker = { arg funcSelector, zoneIndex, playerz, msg;
 	//visible pve synth modulator
 	{ funcSelector == 6 }//ambisonic modlar buraya
 	{
-		//(zoneIndex + "zoneIndex").postln;
-		//(playerz + "playerz").postln;
-		//(closenessCheckerPVE.value(zoneIndex, playerz).lincurve(0,~zonez[zoneIndex,3] * 4, -45, 0,(~zonez[zoneIndex,13]/5)-10)).postln;
 		~boolMe[zoneIndex, playerz].set(
-			\closeness, closenessCheckerPVE.value(zoneIndex, playerz).lincurve(0,~zonez[zoneIndex,3], -45,0,(~zonez[zoneIndex,13]/5)-10), //yakinlastikca artan ses
+			\closeness, closenessCheckerPVE.value(zoneIndex, playerz).lincurve(0,~zonez[zoneIndex,3],
+				-45,0,(~zonez[zoneIndex,13]/5)-10),
 			\amp, 1,
 			\panMe, panCalPVE.value(zoneIndex, playerz)
 		);
 	}
 
-	//invisible pve  synth modulator.
+	//invisible pve synth modulator.
 	{ funcSelector == 7 }//ambisonic modlar buraya
 	{
-		"invisible -> func7".postln;
+	/*	"invisible -> func7".postln;
 		~boolMe[zoneIndex, playerz].set(
 			\closeness, closenessCheckerPVE.value(zoneIndex, playerz).lincurve(0,~zonez[zoneIndex,3], -45,0,(~zonez[zoneIndex,13]/5)-10), //yakinlastikca artan ses
 			\amp, 1
-		);
-	};
-}
+		);*/
+	}
 
+};
 
+OSCdef(\speaker0, { |msg, time|
+	var speakerIndex = msg[1]-5;
+	var speakerOut = msg[1];
+
+	msg.postln;
+	~speakerz[speakerIndex,0] = msg[2];
+	~speakerz[speakerIndex,1] = msg[3];
+	~speakerz[speakerIndex,2] = msg[4];
+	~speakerz[speakerIndex,3] = msg[5]; //speaker area,
+	~speakerz[speakerIndex,4] = msg[6]; //speaker volume
+
+	~zoneNumber.do({arg zoneIndex;
+		//Player vs zone check
+		if(~zonez[zoneIndex,0] != nil,
+			{
+				if(~zonez[zoneIndex,3] > ~disCal.value(~zonez[zoneIndex,0] -
+					~speakerz[speakerIndex,0], ~zonez[zoneIndex,1] -
+					~speakerz[speakerIndex,1],~zonez[zoneIndex,2] - ~speakerz[speakerIndex,2]),
+				{
+					if (~boolMeSpeaker[zoneIndex, speakerIndex] == nil,
+						{
+							"SpeakerBinder".postln;
+							~boolMeSpeaker[zoneIndex, speakerIndex] = Synth.after(~boolMeZone[zoneIndex],
+								\binderPlayerSpeaker,
+								[
+									\busMe, ~zone_Bus[zoneIndex],
+									\busOut, speakerOut +5,
+									\amp, 1,
+									\closeness, closenessCheckerPVE.value(zoneIndex,
+										speakerIndex).lincurve(0,~zonez[zoneIndex,3],
+										-45, 0,(~zonez[zoneIndex,13]/5)-10)
+								]
+							).onFree{~boolMeSpeaker[zoneIndex, speakerIndex] = nil};
+
+						},
+						{
+							~boolMeSpeaker[zoneIndex, speakerIndex].set(
+								\closeness, closenessCheckerPVE.value(zoneIndex, speakerIndex).lincurve(0,~zonez[zoneIndex,3],
+									-45,0,(~zonez[zoneIndex,13]/5)-10),
+								\amp, 1
+							);
+					    })
+				},
+				{
+					if(~boolMeSpeaker[zoneIndex, speakerIndex] != nil,
+						{
+							~boolMeSpeaker[zoneIndex, playerz].release(3);
+							//~boolMeSpeaker[zoneIndex, speakerIndex].free;
+							~boolMeSpeaker[zoneIndex, speakerIndex] = nil;
+					});
+				});
+		});
+	});
+}, \speakerPos).permanent_(true);
 
 
 )
+
+//
+//
+// { funcSelector == 22}
+// {//MAYBE MESSED UP INDEXING
+// 	~boolMePVP[playerz, msg]= Synth.after(~pvp[playerz], \binderPlayerSpeaker,[
+// 		\busMe, ~pvp_Bus[playerz],
+// 		\busOut, msg+5,
+// 		\closeness, closenessCheckerPVP.value(playerz,msg).lincurve(0,~playerz[playerz,3],
+// 		-45,0,(~playerz[playerz,13]/5)-10),
+// 		\amp, 1
+// 		//			\panMe, panCal.value(playerz, msg)
+// 		]
+// 	).onFree{~boolMePVP[playerz, msg] = nil};
+// }
+//
+// { funcSelector == 23 }
+// {
+// 	~boolMePVP[playerz, msg].set(
+// 		\closeness, closenessCheckerPVP.value(playerz,msg).lincurve(0,~playerz[playerz,3],
+// 		-45,0,(~playerz[playerz,13]/5)-10),
+// 		\amp, 1
+// 		//			\panMe, panCalPVE.value(playerz, msg);
+// 	);
+// }
+
 // NOTES
 /*
 ACN	(l,m)	letter code

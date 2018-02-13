@@ -33,7 +33,7 @@ m = NetAddr("127.0.0.1", 57120); // loopback
 s.plotTree;
 
 //Synth
-~pvp = Array.newClear(~playerNumber + ~speakerNumber); //player index
+~pvp = Array.newClear(~playerNumber); //player index
 ~playerNumber.do({arg item; ~pvp_Bus[item] = Bus.audio(s,2)});
 ~sekiz_Bus8 = Array.newClear(~playerNumber); //player
 ~pvp_Bus8id = Array.newClear(~playerNumber); //player
@@ -47,17 +47,19 @@ s.plotTree;
 
 //Wavefield synthesis
 
-~vBus = nil;
-//~speakerNumber.do({arg sid; ~speaker_Bus[sid] = Bus.audio(s,1)});
-~speakerVBus = Bus.audio(s,2);
+//~speaker_Bus = Array.newClear(~speakerNumber);
+//~speakerNumber.do({arg item; ~zone_Bus[item] = Bus.audio(s,2)});
+
 
 
 //Structures
 ~playerz = Array2D.new(~playerNumber,30);
+~speakerz = Array2D.new(~speakerNumber,5);
 ~zonez = Array2D.new(~zoneNumber,30);
-~boolMe = Array2D.new(~zoneNumber,~playerNumber+~speakerNumber);
+~boolMe = Array2D.new(~zoneNumber,~playerNumber);
+~boolMeSpeaker = Array2D.new(~zoneNumber,~speakerNumber);
 ~boolMeTrigger = Array2D.new(~zoneNumber,~playerNumber);
-~boolMePVP = Array2D.new(~playerNumber,~playerNumber+~speakerNumber);
+~boolMePVP = Array2D.new(~playerNumber,~playerNumber);
 ~boolMePVPTrigger= Array2D.new(~playerNumber,~playerNumber);
 ~boolMeZone = Array.newClear(~zoneNumber);
 ~boolMeZoneTrigger = Array.newClear(~zoneNumber);
@@ -83,6 +85,7 @@ s.waitForBoot({
 	"loadpool.scd".loadRelative;
 	"modulations.scd".loadRelative;
 	"multidefs.scd".loadRelative;
+
 });
 )
 
