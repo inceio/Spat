@@ -59,6 +59,7 @@ s.plotTree;
 ~boolMe = Array2D.new(~zoneNumber,~playerNumber);
 ~boolMeSpeaker = Array2D.new(~zoneNumber,~speakerNumber);
 ~boolMeTrigger = Array2D.new(~zoneNumber,~playerNumber);
+~dx = Array2D.new(~zoneNumber,~playerNumber);
 ~boolMePVP = Array2D.new(~playerNumber,~playerNumber);
 ~boolMePVPTrigger= Array2D.new(~playerNumber,~playerNumber);
 ~boolMeZone = Array.newClear(~zoneNumber);
@@ -78,13 +79,18 @@ s.plotTree;
 */
 s.boot;
 s.waitForBoot({
-	"spatdefs.scd".loadRelative;
-	"spat.scd".loadRelative;
-	"tspat.scd".loadRelative;
-	"multichannel.scd".loadRelative;
+	//"spatdefs.scd".loadRelative;
+	"spatdefsn.scd".loadRelative;
+	//"spat.scd".loadRelative;
+	"spatnmod.scd".loadRelative;
+	//"tspat.scd".loadRelative;
+	"tspatn.scd".loadRelative;
+	//"multichannel.scd".loadRelative;
+	"multichanneln.scd".loadRelative;
 	"loadpool.scd".loadRelative;
+	//"loadpooln.scd".loadRelative;
 	"modulations.scd".loadRelative;
-	"multidefs.scd".loadRelative;
+	"multidefsn.scd".loadRelative;
 
 });
 )

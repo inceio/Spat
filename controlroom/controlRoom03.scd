@@ -60,14 +60,7 @@ m.sendMsg("/scenepool", 'Barbican2');//sample pool
 
 x.free//test free
 m = NetAddr("127.0.0.1", 5000); // loopback
-m = NetAddr("127.0.0.1", 57121); // Unity listener
-
-
-OSCdef(\tidalvis, { |msg, time| //first player
-	msg.postln;
-
-}, \vis).permanent_(true);
-SuperDirt.start
+m = NetAddr("127.0.0.1", 57120); // Unity listener
 
 OSCdef(\players, { |msg, time| //first player
 	msg.postln;

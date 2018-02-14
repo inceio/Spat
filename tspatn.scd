@@ -205,8 +205,24 @@ OSCdef(\trigSynthPlayerZ, { |msg, time|
 	});*/
 }, \trigSynthPlayer).permanent_(true);
 
+OSCdef(\spatdx7, { |msg, time|
+	var zoneIndex, pitch, velocity, preset, playerIndex, noteT;
+	noteT = msg[1];
+	zoneIndex = msg[2];
+	playerIndex = msg[3];
+	pitch = msg[4];
+	velocity = msg[5];
+	preset = msg[6];
 
-
+	if(~dx[zoneIndex,playerIndex] === nil, {
+		~dx[zoneIndex,playerIndex] = DX7Clone.new;
+	});
+	if(noteT == 1,{
+		~dx[zoneIndex,playerIndex].note(1,pitch,velocity, preset, 0*2);
+	},{
+		~dx[zoneIndex,playerIndex].note(1,pitch,0, preset, playerIndex*2);
+	});
+}, \dx7).permanent_(true);
 OSCdef(\ztf, { |msg, time|
 
 	j = Synth(\zoneTrigFunk, [\bufnum, ~smple[msg[1]], \closeness, 1 ,\out, msg[3] * 2, \loopMe, msg[2]]);

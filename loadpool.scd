@@ -1,7 +1,6 @@
 (
 var poolname = 'barbican0';
 var folder, folderrare, folderbasho;
-
 folder = PathName.new((("SST"++(poolname.asString)).resolveRelative).asAbsolutePath);
 	folder.entries.do({
 		arg path;
@@ -26,36 +25,85 @@ folderbasho = PathName.new((("SST"++(poolname.asString)).resolveRelative).asAbso
 		arg path;
 		~sst4 = ~sst4.add(Buffer.read(s, path.fullPath));
 	});
+/*poolname = 'barbican0';
+ folder = PathName.new((("SST"++(poolname.asString))).asAbsolutePath);
+ folder.entries.do({
+	arg path;
+	~sst3 = ~sst3.add(Buffer.read(s, path.fullPath));
+});
+poolname = 'barbican1';
+folder = PathName.new((("SST"++(poolname.asString)).resolveRelative).asAbsolutePath);
+	folder.entries.do({
+		arg path;
+		~sst4 = ~sst4.add(Buffer.read(s, path.fullPath));*/
+	//});
+// poolname = 'basho2';
+// PathName.new((("SST"++(poolname.asString))).asAbsolutePath);
+// folder.entries.do({
+// 	arg path;
+// 	~sst4 = ~sst4.add(Buffer.read(s, path.fullPath));
+// });
+// poolname = 'quad';
+// folder = PathName.new((("SST"++(poolname.asString)).resolveRelative).asAbsolutePath);
+// folder.entries.do({
+// 	arg path;
+// 	~sst5 = ~sst5.add(Buffer.read(s, path.fullPath));
+// });
+// poolname = 'ultrararemix';
+// PathName.new((("SST"++(poolname.asString))).asAbsolutePath);
+// folder.entries.do({
+// 	arg path;
+// 	~sst6 = ~sst6.add(Buffer.read(s, path.fullPath));
+// });
+// poolname = 'quad_c';
+// PathName.new((("SST"++(poolname.asString))).asAbsolutePath);
+// folder.entries.do({
+// 	arg path;
+// 	~sst7 = ~sst7.add(Buffer.read(s, path.fullPath));
+// });
+// poolname = 'basho_stripe';
+// PathName.new((("SST"++(poolname.asString))).asAbsolutePath);
+// folder.entries.do({
+// 	arg path;
+// 	~sst8 = ~sst8.add(Buffer.read(s, path.fullPath));
+// });
+//
+// poolname = 'mashup';
+// PathName.new((("SST"++(poolname.asString))).asAbsolutePath);
+// folder.entries.do({
+// 	arg path;
+// 	~sst11 = ~sst11.add(Buffer.read(s, path.fullPath));
+// });
+
 
 OSCdef(\pooler, { |msg, time|
 	var poolname, folder;
 	msg[1].postln;
 
 	poolname = msg[1];
-	~smple  = "/Users/canince/Desktop/Spat/SpatSC/SST/"++ poolname ++ "/*.wav".pathMatch.collect({ arg i;  Buffer.read(s, i)});
-	// if(poolname == nil, {
-	// 	~smple = ~smple;
-	// });
-	// if(poolname == 'barbican0', {
-	// 	CmdPeriod.run;
-	// 	s.freeAll;
-	// 	~smple = ~sst1;
-	// });
-	// if(poolname == 'barbican1', {
-	// 	CmdPeriod.run;
-	// 	s.freeAll;
-	// 	~smple = ~sst2;
-	// });
-	// if(poolname == 'ultrararemix', {
-	// 	CmdPeriod.run;
-	// 	s.freeAll;
-	// 	~smple = ~sst3;
-	// });
-	// if(poolname == 'quad_c2', {
-	// 	CmdPeriod.run;
-	// 	s.freeAll;
-	// 	~smple = ~sst3;
-	// });
+	if(poolname == nil, {
+		~smple = ~smple;
+	});
+	if(poolname == 'barbican0', {
+		CmdPeriod.run;
+		s.freeAll;
+		~smple = ~sst1;
+	});
+	if(poolname == 'barbican1', {
+		CmdPeriod.run;
+		s.freeAll;
+		~smple = ~sst2;
+	});
+	if(poolname == 'ultrararemix', {
+		CmdPeriod.run;
+		s.freeAll;
+		~smple = ~sst3;
+	});
+	if(poolname == 'quad_c2', {
+		CmdPeriod.run;
+		s.freeAll;
+		~smple = ~sst3;
+	});
 	/*if(poolname == 'quad', {
 		CmdPeriod.run;
 		s.freeAll;

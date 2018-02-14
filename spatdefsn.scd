@@ -5,6 +5,80 @@ folder.entries.do({
 	arg path;
 	~smple = ~smple.add(Buffer.read(s, path.fullPath));
 });
+
+SynthDef(\ZManchun,{ arg out = 0,  bufnum,  freq, amp = 1, gate = 1, busOut, busOut2, loopMe,
+	smplSt, smplEd, trkVol, attk, rell, spreadMe,coarse,frqLPF;
+	var src;
+	//--------------------------Signal Processing Side--------------------------\\
+	var start1 = smplSt.linlin(0,100,1,(BufFrames.kr(bufnum))-3);
+	var end1 = BufFrames.kr(bufnum)-smplEd.linlin(0,100,( BufFrames.kr(bufnum))-start1-3, 1)-2;
+	var phaz = Phasor.ar(
+			trig: 1,
+			rate: (BufRateScale.kr(bufnum) *  (freq.midicps)/261) * (coarse.linlin(0,100,-64,63)+1).midiratio,
+			start: start1,
+			end: end1,
+			resetPos:0);
+	var odod = InRange.ar(phaz,start1+1 ,end1-1000);
+	//var tester = Poll.ar(odod, DC.ar(3), \test);
+	var sndsnd =  BufRd.ar(
+		numChannels: 2,
+		bufnum: bufnum,
+		phase: phaz,
+		loop: 0,
+		interpolation:4);
+	//Volume Envelope Signal
+	var snd1 = sndsnd * EnvGen.ar(Env.asr(0.04, 1, 0.04, -4), odod);
+	//LowPass Filter Envelope Signal
+	var aftFilt = LPF.ar(snd1, Lag2.kr(frqLPF));
+	src = aftFilt  * (trkVol - 20).dbamp;
+	Out.kr(busOut2, [spreadMe,spreadMe,spreadMe]);
+	Out.ar(busOut, src);
+	FreeSelf.kr(phaz >= (end1 + (loopMe * 1000) - 50));
+}).add;
+
+~defZSampler = { arg selector,
+	msg6, msg7, msg8, msg9, msg10, msg11,
+	voice,c1,msg13, msg14, msg17,msg18,msg19;
+	var vrManchun = Array.fill(128, 63);
+	vrManchun[6] = msg6; //sample no
+	vrManchun[8] = msg7; 			//sample start
+	vrManchun[9] = msg8;	 		//sample end
+	vrManchun[18] = msg9;	 		//filter cutoff
+	vrManchun[0] = msg10;			//pitch
+	vrManchun[7] = msg11;			//volume
+	if(selector == 1,
+		{ [
+			\freq, 	vrManchun[0],
+			\trkVol, vrManchun[7].linlin(0,100, 0, 36),
+			\bufnum, ~smple[vrManchun[6]],
+			\smplSt, vrManchun[8],
+			\smplEd, vrManchun[9],
+			\frqLPF, vrManchun[18].linexp(0,100,20,20000),
+			\loopMe, msg13,
+			\spreadMe, msg14,
+			\attk, msg17,
+			\rell, msg18,
+			\coarse, msg19
+
+
+		]},
+		{
+			voice.set(
+				\freq, 	vrManchun[0],
+				\smplSt, vrManchun[8],
+				\bufnum, ~smple[vrManchun[6]],
+				\smplEd, vrManchun[9],
+				\frqLPF, vrManchun[18].linexp(0,100,20,20000),
+				\trkVol, vrManchun[7].linlin(0,100, 0, 36),
+				\loopMe, msg13,
+				\spreadMe, msg14,
+				\attk, msg17,
+			    \rell, msg18,
+				\coarse, msg19
+			)
+		}
+
+)};
 SynthDef(\Manchun,{ arg out = 0,  bufnum,  freq, amp = 1, gate = 1, busOut, busOut2, loopMe,
 	smplSt, smplEd, trkVol, frqLPF,coarse, attk, rell, spreadMe;
 	var src;
@@ -31,7 +105,7 @@ SynthDef(\Manchun,{ arg out = 0,  bufnum,  freq, amp = 1, gate = 1, busOut, busO
 	src = aftFilt * (trkVol - 20).dbamp;
 	Out.kr(busOut2, [spreadMe,spreadMe,spreadMe]);
 	Out.ar(busOut, src);
-	FreeSelf.kr(phaz >= (end1 + (loopMe * 100) - 50));
+	FreeSelf.kr(phaz >= (end1 + (loopMe * 1000) - 50));
 }).add;
 ~defSampler = { arg selector,
 	msg6, msg7, msg8, msg9, msg10, msg11,
@@ -97,10 +171,10 @@ SynthDef(\TrigManchun,{ arg busOut = 0,amp = 1, gate = 1, bufnum, freq , loopMe,
 	aftFilt = aftFilt * (trkVol - 20).dbamp;
 	Out.kr(busOut2, [spreadMe,spreadMe,spreadMe]);
 	Out.ar(busOut, aftFilt);
-	FreeSelf.kr(phaz >= (end1 + (loopMe * 100) - 50));
+	FreeSelf.kr(phaz >= (end1 + (loopMe * 1000) - 50));
 }).add;
 
-SynthDef(\zoneTrigFunk,{ arg out, bufnum,closeness, loopMe ;
+SynthDef(\zoneTrigFunk,{ arg out, bufnum,closeness = 0, loopMe = 0 ;
 	var out1, abc;
 	var phaz = Phasor.ar(
 		trig: 1,
@@ -118,7 +192,7 @@ SynthDef(\zoneTrigFunk,{ arg out, bufnum,closeness, loopMe ;
 	//sndsnd = sndsnd * (closeness).dbamp;
 	sndsnd = Limiter.ar(sndsnd);
 	Out.ar(out,sndsnd);
-	FreeSelf.kr(phaz >= ((loopMe * 100) - 50));
+	FreeSelf.kr(phaz >= ((loopMe * 1000) - 50));
 }).add;
 
 /////////////////////////BINDERS/////////////////////////
@@ -166,7 +240,7 @@ SynthDef(\binderSpeaker,{ arg out = 0, busMe, amp = 1, busOut, closeness, gate =
 SynthDef(\binderVB,{ arg out = 0, spkbuf = ~spkbuf, azimuth, elevation, spread, busMe, amp = 1, busOut, gate = 1,sp0amp, sp1amp,sp2amp,sp3amp,sp4amp,sp5amp; //wavefield Synthesis with distance amplitude calibration
 	var panned;
 	var src = In.ar(busMe,2);
-	src = src  * EnvGen.kr(Env.asr(0.001), gate, doneAction:2);
+//	src = src  * EnvGen.kr(Env.asr(0.001), gate, doneAction:2);
 	src = Mix.ar(src);
 	panned = VBAP.ar(6, src, spkbuf,azimuth, elevation, spread);
 	Out.ar(10, panned[0]*sp0amp.dbamp);
